@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        #myCanvas{
+        background-image: url(Underwater.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        position:fixed;
+        width: 50%;
+        height: 50%;
+        left:50%;
+        top:50%;
+        transform: translate(-50%,-50%);
+        border: 5px solid black;
+        }
+
+        h2{
+            position: absolute;
+            left: 45%;
+            top:15%;
+            color:red;
+            font-family: cursive;
+            font-size: 35px;
+
+        }
+
+
+    </style>
+
+
+</head>
+
+<body>
+
+
+
+    <h2>My Aquarium</h2>
+
+    <canvas id="myCanvas"></canvas>
+
+ <script>
+    const emojis=["🐟","🐠","🐡","🦐","🦀"];
+    const ctx = myCanvas.getContext('2d');
+    const margin = 100;
+
+
+    class Fish{
+        constructor(img){
+
+            this.img=img;
+            //Randomize the apperence of fishes 
+            this.x = Math.random()*myCanvas.width;
+            this.y = Math.random()*myCanvas.height;
+
+            this.size = Math.random()*5 + 10;
+            
+            // Choose direction
+            const dir = Math.sign(Math.random()-0.5);
+
+            this.speed = this.size*dir*0.02;
+
+        };
+
+            update(ctx){
+                this.x += this.speed;
+                if(this.x > myCanvas.width + margin){
+                    this.x = 0;
+                }
+
+                if(this.x < 0 - margin){
+                    this.x = myCanvas.width;
+                }
+
+                ctx.save();
+                ctx.translate(this.x,this.y);
+                if(this.speed>0){
+                    ctx.scale(-1,1);
+                }
+                ctx.font=this.size + "px Arial"
+                ctx.fillText(this.img,0,0);
+                ctx.restore();
+
+            };
+    }
+
+  let fishes = new Array();
+
+  for(let i=1; i<=50; i++){
+        fishes.push(new Fish(emojis[i%emojis.length]));     
+    };
+
+  animate();
+
+
+  function animate(){
+        ctx.clearRect(0,0,myCanvas.width,myCanvas.height);
+        fishes.forEach(fish=>{
+            fish.update(ctx);
+        });
+
+
+        requestAnimationFrame(animate);
+    };
+
+ </script>
+
+
+</body>
+</html>
